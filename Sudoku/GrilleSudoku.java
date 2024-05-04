@@ -97,13 +97,16 @@ public class GrilleSudoku extends JComponent {
     }
 
      // Définit un DocumentFilter pour limiter la saisie à un seul caractère
-     class JTextFieldLimit extends DocumentFilter {
+    class JTextFieldLimit extends DocumentFilter {
+        private int maxLength = 12; // Limite de 12 caractères
+
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
             if (string == null) return;
 
-            if ((fb.getDocument().getLength() + string.length()) <= 1) {
-                super.insertString(fb, offset, string.replaceAll("\\D", ""), attr); // Permet uniquement les chiffres
+            // Vérifier si la longueur du texte après insertion dépasse la limite
+            if ((fb.getDocument().getLength() + string.length()) <= maxLength) {
+                super.insertString(fb, offset, string.replaceAll("[^\\d\\{\\}]", ""), attr); // Permet uniquement les chiffres et les accolades
             }
         }
 
@@ -111,14 +114,15 @@ public class GrilleSudoku extends JComponent {
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
             if (text == null) return;
 
+            // Vérifier si la longueur du texte après remplacement dépasse la limite
             int newLength = fb.getDocument().getLength() + text.length() - length;
-            if (newLength <= 1) {
-                super.replace(fb, offset, length, text.replaceAll("\\D", ""), attrs); // Permet uniquement les chiffres
+            if (newLength <= maxLength) {
+                super.replace(fb, offset, length, text.replaceAll("[^\\d\\{\\}]", ""), attrs); // Permet uniquement les chiffres et les accolades
             }
         }
     }
    
-    //Pour vérifier les cases, colonnes et lignes.
+    //Pour vérifier les cases,colonnes et blocs 3x3.
     public boolean isValidInput(int ligne, int colonne, int valeur) {
         for (int j = 0; j < 9; j++) {
             if (j != colonne && grille[ligne][j].getText().equals(String.valueOf(valeur))) {
@@ -163,6 +167,15 @@ public class GrilleSudoku extends JComponent {
                                 }
                             }
                         }
+
+                        String texte = source.getText();
+                        if (texte.length() > 1) {
+                            // Si le texte de la case est supérieur à un chiffre, désactiver les contraintes du Sudoku
+                            // en changeant la couleur de la police à noire
+                            source.setForeground(Color.BLACK);
+                            return ;
+                        }
+
                         int valeur = Integer.parseInt(source.getText());
                         if (!isValidInput(ligne, colonne, valeur)) {
                             source.setForeground(Color.RED);
@@ -175,6 +188,8 @@ public class GrilleSudoku extends JComponent {
                             source.setForeground(Color.BLACK);
                             erreurs = 0;
                         }
+                        
+
                         
                         if (isGrilleComplete() && isValidInput(ligne, colonne,valeur)) {
                             success++;
