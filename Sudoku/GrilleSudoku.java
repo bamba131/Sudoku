@@ -1,87 +1,83 @@
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
-import java.util.Random;
 
-
-/* Pour créer une grille de Sudoku, on s'est d'abord attaqué à la structure de donnée de la grille.
- * Pour cela on a utilisé un tableau bidimensionel.
- * Pour ce qui est du dessin, on a fait un héritage de "GrilleSudoku" à la classe "JComponent"
- * afin d'avoir accés au nécessaire dans notre interface graphique.
-*/
 
 
 public class GrilleSudoku extends JComponent {
-    private  int[][] grille;
+    public JTextField[][] grille;
     private Graphics pinceauG;
-    public JTextField field;
+    private int erreurs = 0; // Variable pour compter le nombre d'erreurs
 
 
-// Le constructeur de la grille qui est la base pour comprendre ce qu'on affiche.
     public GrilleSudoku() {
-        grille = new int[9][9]; // tableau bidimensionel pour definir colonne et ligne.
-        // Initialise la grille avec des valeurs par défaut c'est à dire zéro.
+        grille = new JTextField[9][9];
+        setLayout(new GridLayout(9, 9,3,3)); // Utilisation d'un GridLayout pour organiser les JTextField
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                grille[i][j] = 0;
+                final int ligne = i; 
+                final int col = j;
+                grille[i][j] = new JTextField();
+                grille[i][j].setHorizontalAlignment(JTextField.CENTER);
+                grille[i][j].setEditable(true); // Rendre le JTextField éditable
+
+                grille[i][j].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JTextField source = (JTextField) e.getSource();
+                        String text = source.getText();
+                        if (text.length() < 4) { // Limiter à 4 chiffres max
+                            // Ajouter le chiffre sélectionné à la fin du texte actuel dans la case
+                            String value = source.getText();
+                            if (!value.contains(String.valueOf(ligne))) { // Vérifier si le chiffre n'est pas déjà présent
+                                source.setText(value + ligne);
+                            }
+                        }
+                    }
+                });
+                add(grille[i][j]);
+
+                // Ajout du DocumentFilter au Document de chaque JTextField
+                Document doc = grille[i][j].getDocument();
+                if (doc instanceof PlainDocument) {
+                    ((PlainDocument) doc).setDocumentFilter(new JTextFieldLimit());
+                }
             }
         }
+        configurerEcouteurs(); // Appel de la méthode pour configurer les écouteurs d'événements
     }
 
-// Comme son nom l'indique permet de lire dans un fichier une grille.
-    public void lireGrilleDepuisFichier(File file) {
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) { // BufferedReader dans le boc try pour fermer le fichier ouvert dans tous les cas possibles.
-            String ligne;
-            int lignes = 0;
-            // Lecture du fichier ligne par ligne
-            while ((ligne = br.readLine()) != null && lignes < 9) {
-                remplirLigneGrille(lignes, ligne);
-                lignes++;
-            }
-            // Redessin de la grille après la lecture du fichier
-            repaint();
-        } catch (IOException e) {
-            e.printStackTrace(); //Pour comprendre d'ou provient le problème
-        }
-    }
-
-    // Remplir la grille ligne par ligne
-    private void remplirLigneGrille(int ligneIndex, String ligne) {
-        for (int colonne = 0; colonne < 9; colonne++) {
-            char chiffre = ligne.charAt(colonne);
-            if (chiffre >= '0' && chiffre <= '9') {
-                grille[ligneIndex][colonne] = chiffre - '0';
-            } else {
-                grille[ligneIndex][colonne] = 0;
-               
-            }
-        }
-    }
-// Pour les dessins
     @Override
-    protected void paintComponent(Graphics pinceau) {
-        Graphics pinceauG = pinceau.create();
-        this.pinceauG = pinceau.create();
-        // Dessine la grille
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                int valeur = grille[i][j];
-                String text = (valeur == 0) ? "" : String.valueOf(valeur); // Condition booléenne
-                dessinCell(pinceauG, i, j, text);
-            }
-        }
-        // Dessine les lignes de séparation
-        pinceauG.setColor(Color.BLACK);
-        for (int i = 0; i <= 9; i++) {
-            int epaisseur = (i % 3 == 0) ? 3 : 1;
-            Graphics2D pinceauG2 = (Graphics2D) pinceauG;
-            pinceauG2.setStroke(new BasicStroke(epaisseur));
-            pinceauG.drawLine(i * getWidth() / 9, 0, i * getWidth() / 9, getHeight());
-            pinceauG.drawLine(0, i * getHeight() / 9, getWidth(), i * getHeight() / 9);
+protected void paintComponent(Graphics pinceau) {
+    Graphics pinceauG = pinceau.create();
+    this.pinceauG = pinceau.create();
+    // Dessine la grille
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            String text = grille[i][j].getText();
+            dessinCell(pinceauG, i, j, text);
         }
     }
+    // Dessine les lignes de séparation
+    pinceauG.setColor(Color.BLACK);
+    for (int i = 0; i <= 9; i++) {
+        int epaisseur = (i % 3 == 0) ? 3 : 1;
+        Graphics2D pinceauG2 = (Graphics2D) pinceauG;
+        pinceauG2.setStroke(new BasicStroke(epaisseur));
+        pinceauG.drawLine(i * getWidth() / 9, 0, i * getWidth() / 9, getHeight());
+        pinceauG.drawLine(0, i * getHeight() / 9, getWidth(), i * getHeight() / 9);
+    }
+}
 
     private void dessinCell(Graphics pinceauG, int ligne, int colonne, String text) {
         int x = colonne * getWidth() / 9;
@@ -96,39 +92,112 @@ public class GrilleSudoku extends JComponent {
         pinceauG.drawString(text, textX, textY);
     }
 
-// cette méthode nous sert par le biais de la classe SudokuSolver de résoudre la grille choisie.
     public void resoudreGrille() {
-        SudokuSolver.resoudreGrille(grille); // on utilise la méthode resoudreGrille de SudokuSolver.
-        repaint();
+        Resolution.resoudreGrille(grille);
     }
 
-   /*  public void genererGrille(){
-    // remplir la grille de manière aléatoire 
-    remplirGrilleAleatoirement();
+     // Définit un DocumentFilter pour limiter la saisie à un seul caractère
+     class JTextFieldLimit extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            if (string == null) return;
 
-    //Résoudre la grille générée pour obtenir une grille de Sudoku valide
-    SudokuSolver.resoudreGrille(grille);
+            if ((fb.getDocument().getLength() + string.length()) <= 4) {
+                super.insertString(fb, offset, string.replaceAll("\\D", ""), attr); // Permet uniquement les chiffres
+            }
+        }
 
-    // Effacer certains éléments de la grille pour la rendre partiellement rempli
-    effacerElements();
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            if (text == null) return;
 
-    repaint();
-    }*/
-
-     private void remplirGrilleAleatoirement(){
-        
-
+            int newLength = fb.getDocument().getLength() + text.length() - length;
+            if (newLength <= 1) {
+                super.replace(fb, offset, length, text.replaceAll("\\D", ""), attrs); // Permet uniquement les chiffres
+            }
+        }
     }
-    
 
-    private void effacerElements(){
+    public boolean isValidInput(int ligne, int colonne, int valeur) {
+        for (int j = 0; j < 9; j++) {
+            if (j != colonne && grille[ligne][j].getText().equals(String.valueOf(valeur))) {
+                return false;
+            }
+        }
 
+        for (int i = 0; i < 9; i++) {
+            if (i != ligne && grille[i][colonne].getText().equals(String.valueOf(valeur))) {
+                return false;
+            }
+        }
+
+        int blocLigne = ligne / 3 * 3;
+        int blocColonne = colonne / 3 * 3;
+        for (int i = blocLigne; i < blocLigne + 3; i++) {
+            for (int j = blocColonne; j < blocColonne + 3; j++) {
+                if (!(i == ligne && j == colonne) && grille[i][j].getText().equals(String.valueOf(valeur))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-   /*  public static void main(String[] args){
-       GrilleSudoku gs = new GrilleSudoku();
-       gs.remplirGrilleAleatoirement();
-        return grille;
+    public void configurerEcouteurs() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                grille[i][j].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JTextField source = (JTextField) e.getSource();
+                        int ligne = -1;
+                        int colonne = -1;
+                        for (int i = 0; i < 9; i++) {
+                            for (int j = 0; j < 9; j++) {
+                                if (grille[i][j] == source) {
+                                    ligne = i;
+                                    colonne = j;
+                                    break;
+                                }
+                            }
+                        }
+                        int valeur = Integer.parseInt(source.getText());
+                        if (!isValidInput(ligne, colonne, valeur)) {
+                            source.setForeground(Color.RED);
+                            erreurs++;
+                           /*if (erreurs >= 3) {
+                                JOptionPane.showMessageDialog(null, "Trop d'erreurs! Il faut réessayer.");
+                                System.exit(0);
+                            } */
+                        } else {
+                            source.setForeground(Color.BLACK);
+                            erreurs = 0;
+                        }
+                        
+                        
+                        
+                        if (isGrilleComplete()) {
+                            JOptionPane.showMessageDialog(null, "Félicitations! La grille est complète.");
+                            System.exit(0);
+                        }
+                    }
+                });
+            }
+        }
+    }
 
-    }*/
+    // Méthode pour vérifier si la grille est complète
+    public boolean isGrilleComplete() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (grille[i][j].getText().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
+     
+
