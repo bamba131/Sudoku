@@ -44,10 +44,6 @@ public class GenerateurGrille {
         }
     }
 
-    
-
-   
-
     private static void placerNombresAleatoires(JTextField[][] grille, int[][] intGrid) {
         Random random = new Random();
         for (int i = 0; i < NOMBRES_ALEATOIRES; i++) {
@@ -70,7 +66,6 @@ public class GenerateurGrille {
             grille[ligne][col].setEditable(true); // Rendre la case éditable pour l'utilisateur
         }
     }
-
 
     // Méthode récursive pour générer la grille
     private static boolean generate(int[][] grille) {
