@@ -1,7 +1,6 @@
 import javax.swing.JTextField;
 import java.util.Random;
-/* Cette classe nous permet de génerer une grille à l'aide d'une grille crée valide 
-à laquelle on enlève des cases*/
+
 public class GenerateurGrille {
 
     private static final int TAILLE_GRILLE = 9;

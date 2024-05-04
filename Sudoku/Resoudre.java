@@ -18,8 +18,8 @@ En cas de doute, il pourra ajouter jusqu'à quatre chiffres dans une même case.
 public class Resoudre {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Grille de Sudoku");
-        GrilleSudoku gs = new GrilleSudoku();
-        frame.add(gs);
+        GrilleSudoku sudoku = new GrilleSudoku();
+        frame.add(sudoku);
         frame.setSize(600, 550);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel buttonPanel = new JPanel();
@@ -45,7 +45,7 @@ public class Resoudre {
         JButton oppenButton = new JButton("Charger la grille sauvegardée");
         oppenButton.addActionListener(e -> {
             try {
-                GestionFichier.ouvrirFichier(frame, gs.grille);
+                GestionFichier.ouvrirFichier(frame, sudoku.grille);
             } catch (IOException exeption1) {
                 System.err.println("erreur sur l'ouverture");
             }
@@ -57,7 +57,7 @@ public class Resoudre {
             JButton rButton = new JButton("Résoudre la grille");
             rButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    gs.resoudreGrille();
+                    Resolution.resoudreGrille(sudoku.grille);
                 }
             });
             buttonPanel.add(rButton);

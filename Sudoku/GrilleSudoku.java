@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
+
 /*La classe GrilleSudoku est la classe qui gère la conception et l'affichage de la grille.
  * Dans ce cas-ci , la grille est stockée dans un tableau de zone de texte.
  * GrilleSudoku hérite de JComponent pour nous permettre d'intégrer les zones de texte et la partie 
@@ -92,9 +94,7 @@ public class GrilleSudoku extends JComponent {
         pinceauG.drawString(text, textX, textY);
     }
 
-    public void resoudreGrille() {
-        Resolution.resoudreGrille(grille);
-    }
+    
 
      // Définit un DocumentFilter pour limiter la saisie à un seul caractère
     class JTextFieldLimit extends DocumentFilter {
@@ -227,3 +227,4 @@ public class GrilleSudoku extends JComponent {
         return true;
     }
 }
+    
