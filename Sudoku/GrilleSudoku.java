@@ -30,6 +30,7 @@ public class GrilleSudoku extends JComponent {
                 grille[i][j] = new JTextField();
                 grille[i][j].setHorizontalAlignment(JTextField.CENTER);
                 grille[i][j].setEditable(true); // Rendre le JTextField éditable
+                grille[i][j].setBorder(BorderFactory.createEmptyBorder()); // Rendre la bordure vide
 
                 grille[i][j].addActionListener(new ActionListener() {
                     @Override
@@ -55,7 +56,11 @@ public class GrilleSudoku extends JComponent {
             }
         }
         configurerEcouteurs(); // Appel de la méthode pour configurer les écouteurs d'événements
+       
     }
+
+   
+    
 
     @Override
 protected void paintComponent(Graphics pinceau) {
@@ -175,17 +180,20 @@ protected void paintComponent(Graphics pinceau) {
                             erreurs = 0;
                         }
                         
-                        
-                        
-                        if (isGrilleComplete()) {
+                        if (isGrilleComplete() && isValidInput(ligne, colonne,valeur)) {
                             JOptionPane.showMessageDialog(null, "Félicitations! La grille est complète.");
                             System.exit(0);
+                        }
+                        else if(isGrilleComplete() && !isValidInput(ligne, colonne,valeur)){
+                            JOptionPane.showMessageDialog(null,"La grille est fausse. Veuillez réessayer!");
                         }
                     }
                 });
             }
         }
     }
+
+    
 
     // Méthode pour vérifier si la grille est complète
     public boolean isGrilleComplete() {
@@ -197,7 +205,6 @@ protected void paintComponent(Graphics pinceau) {
             }
         }
         return true;
+        
     }
 }
-     
-
