@@ -1,7 +1,5 @@
 import javax.swing.*;
 
-
-
 public class Resolution {
 
     private static final int TAILLE_GRILLE = 9;
@@ -44,8 +42,6 @@ public class Resolution {
                 !estDansColonne(grille, chiffre, colonne) &&
                 !estDansCase(grille, chiffre, ligne, colonne);
     }
-
-   
 
     public static boolean resoudreGrille(JTextField[][] grille) {
         for (int ligne = 0; ligne < TAILLE_GRILLE; ligne++) {
