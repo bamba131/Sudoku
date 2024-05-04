@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.ByteOrder;
+import java.awt.*;
 
 /*Cette classe nous permet de gérer tout ce qui est la gestion des fichiers cad elle nous permet d'ouvrir les fichiers 
 et y prendre des grilles mais aussi de les sauvegarder */
@@ -45,6 +46,7 @@ public class GestionFichier {
                     } else {
                         grille[i][j].setText(String.valueOf(charAtPosition));
                         grille[i][j].setEditable(false);
+                        grille[i][j].setForeground(Color.BLACK);
                     }
                 }
                 buffer.clear();
@@ -57,8 +59,7 @@ public class GestionFichier {
 
     }
 
-
-   /*  public static void sauvegarder(JFrame fenetre, JTextField[][] textFields) throws IOException {
+    public static void sauvegarder(JFrame fenetre, JTextField[][] textFields) throws IOException {
         JFileChooser sauvegarder = new JFileChooser();
         FileNameExtensionFilter filtre = new FileNameExtensionFilter("Fichier GRI", "gri");
 
@@ -79,53 +80,24 @@ public class GestionFichier {
             buffer.order(ByteOrder.BIG_ENDIAN);
 
             for (int i = 0; i <= 8; i++) {
+                int valeur = 0;
                 for (int j = 0; j <= 8; j++) {
-                    int valeur = Integer.parseInt(textFields[i][j].getText());
-                    buffer.putInt(valeur);
-                    buffer.flip();
-                    channel.write(buffer);
-                    buffer.clear();
+                    String textFieldContent = textFields[i][j].getText();
+                    int digit = textFieldContent.isEmpty() ? 0 : Integer.parseInt(textFieldContent);
+                    valeur = valeur * 10 + digit; // Construire l'entier à partir des chiffres
                 }
+
+                buffer.putInt(valeur);
+                buffer.flip();
+                channel.write(buffer);
+                buffer.clear();
             }
 
-        }
-
-    }*/
-    public static void sauvegarder(JFrame fenetre, JTextField[][] textFields) throws IOException {
-        JFileChooser sauvegarder = new JFileChooser();
-        FileNameExtensionFilter filtre = new FileNameExtensionFilter("Fichier GRI", "gri");
-
-        sauvegarder.addChoosableFileFilter(filtre);
-        sauvegarder.setAcceptAllFileFilterUsed(false);
-        int verif = sauvegarder.showSaveDialog(null);
-
-        if (verif == JFileChooser.APPROVE_OPTION) {
-            File fichier = sauvegarder.getSelectedFile();
-
-            if (!fichier.getPath().endsWith(".gri")) {
-                fichier = new File(fichier.getPath() + ".gri");
-            }
-
-            // Création d'un flux de sortie vers le fichier
-            try (FileOutputStream sortie = new FileOutputStream(fichier);
-                 FileChannel channel = sortie.getChannel()) {
-
-                // Parcours de toutes les cases de la grille
-                for (int i = 0; i <= 8; i++) {
-                    for (int j = 0; j <= 8; j++) {
-                        // Récupération de la valeur de la case
-                        int valeur = Integer.parseInt(textFields[i][j].getText());
-                        // Écriture de la valeur dans le fichier
-                        ByteBuffer buffer = ByteBuffer.allocate(4);
-                        buffer.order(ByteOrder.BIG_ENDIAN);
-                        buffer.putInt(valeur);
-                        buffer.flip();
-                        channel.write(buffer);
-                    }
-                }
-            }
+            channel.close();
+            sortie.close();
         }
     }
+ }
     
 
-}
+
