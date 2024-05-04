@@ -6,51 +6,49 @@ import java.io.*;
 import java.util.Random;
 
 public class elaborationGrille {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         JFrame frame = new JFrame("Grille de Sudoku");
         GrilleSudoku gs = new GrilleSudoku();
         frame.add(gs);
-        frame.setSize(500, 500);
+        frame.setSize(600, 550);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel buttonPanel = new JPanel();
-        Object[] choix = {"Créer/Charger une grille","Générer une grille"};
-  
-  
+        Object[] choix = { "Créer/Charger une grille", "Générer une grille" };
+
         int reponse = JOptionPane.showOptionDialog(null,
-        "Que voulez vous?",
-        "Question",
-        JOptionPane.DEFAULT_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        choix,
-        null);
-  
-        if (reponse == 0){
-        // creation du bouton servant à ouvrir un fichier pour y récuperer une grille dans nos dossiers
-        JButton oppenButton = new JButton("Charger une grille");
+                "Que voulez vous?",
+                "Question",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                choix,
+                null);
+
+        if (reponse == 0) {
+            // creation du bouton servant à ouvrir un fichier pour y récuperer une grille
+            // dans nos dossiers
+            JButton oppenButton = new JButton("Charger une grille");
             oppenButton.addActionListener(e -> {
                 try {
-                    GestionFichier.ouvrirFichier(frame,gs.grille);
+                    GestionFichier.ouvrirFichier(frame, gs.grille);
                 } catch (IOException ex) {
-                   System.err.println("erreur sur l'ouverture");
+                    System.err.println("erreur sur l'ouverture");
                 }
             });
             buttonPanel.add(oppenButton);
-      }
-      else {
-  
-      JButton gButton = new JButton("Generer une grille");
-      gButton.addActionListener(new ActionListener(){
-        public void actionPerformed(ActionEvent e){
-            GenerateurGrille.generateGrid(gs.grille);
+        } else {
+
+            JButton gButton = new JButton("Generer une grille");
+            gButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    GenerateurGrille.generateGrid(gs.grille);
+                }
+            });
+            buttonPanel.add(gButton);
         }
-      });
-      buttonPanel.add(gButton);
-    }
-        
 
         JButton sButton = new JButton("Sauvegarder la grille");
-        sButton.addActionListener(new ActionListener(){
+        sButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     GestionFichier.sauvegarder(frame, gs.grille);
