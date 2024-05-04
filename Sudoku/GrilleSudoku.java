@@ -12,15 +12,26 @@ import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/*La classe GrilleSudoku est la classe qui gère la conception et l'affichage de la grille.
+ * Dans ce cas-ci , la grille est stockée dans un tableau de zone de texte.
+ * GrilleSudoku hérite de JComponent pour nous permettre d'intégrer les zones de texte et la partie 
+ * graphique.
+ */
+
 
 
 public class GrilleSudoku extends JComponent {
     public JTextField[][] grille;
     private Graphics pinceauG;
     private int erreurs = 0; // Variable pour compter le nombre d'erreurs
-
-
+    private long debutJeu; //Variable pour mesurer le temps
+    private long finJeu;
+    private int success = 0;
+    
+    //Le constructeur qui nous permet de creer la grille
     public GrilleSudoku() {
+        // Initialisation du timer au début du jeu
+        debutJeu = System.nanoTime();
         grille = new JTextField[9][9];
         setLayout(new GridLayout(9, 9,3,3)); // Utilisation d'un GridLayout pour organiser les JTextField
         for (int i = 0; i < 9; i++) {
@@ -31,24 +42,10 @@ public class GrilleSudoku extends JComponent {
                 grille[i][j].setHorizontalAlignment(JTextField.CENTER);
                 grille[i][j].setEditable(true); // Rendre le JTextField éditable
                 grille[i][j].setBorder(BorderFactory.createEmptyBorder()); // Rendre la bordure vide
+               
+                add(grille[i][j]); // ajoute la grille dans le composant graphique
 
-                grille[i][j].addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        JTextField source = (JTextField) e.getSource();
-                        String text = source.getText();
-                        if (text.length() < 4) { // Limiter à 4 chiffres max
-                            // Ajouter le chiffre sélectionné à la fin du texte actuel dans la case
-                            String value = source.getText();
-                            if (!value.contains(String.valueOf(ligne))) { // Vérifier si le chiffre n'est pas déjà présent
-                                source.setText(value + ligne);
-                            }
-                        }
-                    }
-                });
-                add(grille[i][j]);
-
-                // Ajout du DocumentFilter au Document de chaque JTextField
+                // Ajout du filtre au Document de chaque JTextField
                 Document doc = grille[i][j].getDocument();
                 if (doc instanceof PlainDocument) {
                     ((PlainDocument) doc).setDocumentFilter(new JTextFieldLimit());
@@ -56,14 +53,12 @@ public class GrilleSudoku extends JComponent {
             }
         }
         configurerEcouteurs(); // Appel de la méthode pour configurer les écouteurs d'événements
-       
-    }
 
-   
     
-
+    }
+    //Méthode de dessin vu en TP
     @Override
-protected void paintComponent(Graphics pinceau) {
+    protected void paintComponent(Graphics pinceau) {
     Graphics pinceauG = pinceau.create();
     this.pinceauG = pinceau.create();
     // Dessine la grille
@@ -83,7 +78,7 @@ protected void paintComponent(Graphics pinceau) {
         pinceauG.drawLine(0, i * getHeight() / 9, getWidth(), i * getHeight() / 9);
     }
 }
-
+    //dessine les cellules
     private void dessinCell(Graphics pinceauG, int ligne, int colonne, String text) {
         int x = colonne * getWidth() / 9;
         int y = ligne * getHeight() / 9;
@@ -107,7 +102,7 @@ protected void paintComponent(Graphics pinceau) {
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
             if (string == null) return;
 
-            if ((fb.getDocument().getLength() + string.length()) <= 4) {
+            if ((fb.getDocument().getLength() + string.length()) <= 1) {
                 super.insertString(fb, offset, string.replaceAll("\\D", ""), attr); // Permet uniquement les chiffres
             }
         }
@@ -122,7 +117,8 @@ protected void paintComponent(Graphics pinceau) {
             }
         }
     }
-
+   
+    //Pour vérifier les cases, colonnes et lignes.
     public boolean isValidInput(int ligne, int colonne, int valeur) {
         for (int j = 0; j < 9; j++) {
             if (j != colonne && grille[ligne][j].getText().equals(String.valueOf(valeur))) {
@@ -181,8 +177,16 @@ protected void paintComponent(Graphics pinceau) {
                         }
                         
                         if (isGrilleComplete() && isValidInput(ligne, colonne,valeur)) {
-                            JOptionPane.showMessageDialog(null, "Félicitations! La grille est complète.");
-                            System.exit(0);
+                            success++;
+                            // Enregistrer le temps de fin du jeu
+                            finJeu = System.nanoTime();
+                            // Calculer la durée du jeu en secondes
+                            long dureeJeu = (finJeu - debutJeu) / 1_000_000_000;
+                            // Pour calculer naivement le temps en minutes
+                            dureeJeu = dureeJeu - 10 ;
+                            if(success == 1){
+                            JOptionPane.showMessageDialog(null, "Félicitations! La grille est complète. La durée du jeu est de " +dureeJeu+" minutes.");
+                            }
                         }
                         else if(isGrilleComplete() && !isValidInput(ligne, colonne,valeur)){
                             JOptionPane.showMessageDialog(null,"La grille est fausse. Veuillez réessayer!");
@@ -191,13 +195,14 @@ protected void paintComponent(Graphics pinceau) {
                 });
             }
         }
+        success = 0;
     }
 
     
 
     // Méthode pour vérifier si la grille est complète
-    public boolean isGrilleComplete() {
-        for (int i = 0; i < 9; i++) {
+    public boolean isGrilleComplete(){
+        for (int i = 0; i < 9; i++){
             for (int j = 0; j < 9; j++) {
                 if (grille[i][j].getText().isEmpty()) {
                     return false;
@@ -205,6 +210,5 @@ protected void paintComponent(Graphics pinceau) {
             }
         }
         return true;
-        
     }
 }
