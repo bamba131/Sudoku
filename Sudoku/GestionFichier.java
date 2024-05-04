@@ -80,13 +80,20 @@ public class GestionFichier {
             FileChannel channel = sortie.getChannel();
             ByteBuffer buffer = ByteBuffer.allocate(4);
             buffer.order(ByteOrder.BIG_ENDIAN);
+            int digit;
 
             for (int i = 0; i <= 8; i++) {
                 int valeur = 0;
                 for (int j = 0; j <= 8; j++) {
                     String textFieldContent = textFields[i][j].getText();
-                    int digit = textFieldContent.isEmpty() ? 0 : Integer.parseInt(textFieldContent);
+                    if(textFieldContent.length() > 1){
+                        digit = 0;
+                    }
+                    else {
+                    digit = textFieldContent.isEmpty() ? 0 : Integer.parseInt(textFieldContent);
+                    }
                     valeur = valeur * 10 + digit; // Construire l'entier à partir des chiffres
+                    
                 }
 
                 buffer.putInt(valeur);
@@ -101,5 +108,3 @@ public class GestionFichier {
     }
  }
     
-
-
