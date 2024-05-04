@@ -14,6 +14,8 @@ import java.awt.*;
 et y prendre des grilles mais aussi de les sauvegarder */
 public class GestionFichier {
 
+
+    //Ouvre un fichier par les méthodes des flux d'octets
     public static void ouvrirFichier(JFrame frame, JTextField[][] grille) throws IOException {
         JFileChooser filechooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Fichier GRI", "gri"); //Crée un filtre pour restreindre la sélection de fichiers aux fichiers avec l'extension ".gri"
