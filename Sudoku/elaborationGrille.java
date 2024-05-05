@@ -5,14 +5,13 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.Random;
 
-/** C'est le programme qui nous servira à l'élaboration des grilles de départ.
-Pour construire une grille, on pourra partir d'une grille vide ou charger une grille existante depuis un fichier.
-Il devient alors possible d'ajouter ou d'enlever des numéros dans la grille en respectant les contraintes du Sudoku.
-Une fois la grille achevée, elle sera sauvegardée dans un nouveau ou un ancien fichier d'extension .gri
-(Une case sera représentée par le chiffre qu'elle contient si elle est pleine, ou par 0 si elle est vide.
- En mettant bout à bout tous les chiffres d'une ligne, on obtient la représentation décimale d'un entier.)
-*/
-
+/**
+ * La classe <code>elaborationGrille</code> est utilisé pour l'élaboration de grille de Sudoku.
+ * Elle permet de créer, charger et sauvegarder des grilles de Sudoku.
+ * 
+ * @version 1.1
+ * @author Bamba Top
+ */
 public class elaborationGrille {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Grille de Sudoku");

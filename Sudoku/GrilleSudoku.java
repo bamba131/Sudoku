@@ -1,3 +1,5 @@
+package code.DEV.DEVCOPIE.Java.Projet;
+
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -13,27 +15,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-
-/*La classe GrilleSudoku est la classe qui gère la conception et l'affichage de la grille.
- * Dans ce cas-ci , la grille est stockée dans un tableau de zone de texte.
- * GrilleSudoku hérite de JComponent pour nous permettre d'intégrer les zones de texte et la partie 
- * graphique.
+/**
+ * La classe <code>GrilleSudoku</code> est la classe utilisée pour la conception
+ * et l'affichage de la grille.
+ * GrilleSudoku hérite de JComponent pour nous permettre d'intégrer la partie graphique.
+ * 
+ * @version 1.1
+ * @author Bamba Top
  */
-
-
-
 public class GrilleSudoku extends JComponent {
     public JTextField[][] grille;
     private Graphics pinceauG;
-    private int erreurs = 0; // Variable pour compter le nombre d'erreurs
-    private long debutJeu; //Variable pour mesurer le temps
-    private long finJeu;
+    private int erreurs = 0; // Variable pour compter le nombre d'erreurs si besoin
+    private long start; //Variable pour mesurer le temps
+    private long endGame;
     private int success = 0;
     
-    //Le constructeur qui nous permet de creer la grille
+    /**
+     * Constructeur destiné à l'initialisation de la grille.
+     * 
+     * @version 1.1
+     * @author Bamba Top
+     */
     public GrilleSudoku() {
-        // Initialisation du timer au début du jeu
-        debutJeu = System.nanoTime();
+
+        start = System.nanoTime(); // Initialisation du timer au début du jeu
         grille = new JTextField[9][9];
         setLayout(new GridLayout(9, 9,3,3)); // Utilisation d'un GridLayout pour organiser les JTextField
         for (int i = 0; i < 9; i++) {
@@ -44,21 +50,20 @@ public class GrilleSudoku extends JComponent {
                 grille[i][j].setHorizontalAlignment(JTextField.CENTER);
                 grille[i][j].setEditable(true); // Rendre le JTextField éditable
                 grille[i][j].setBorder(BorderFactory.createEmptyBorder()); // Rendre la bordure vide
-               
                 add(grille[i][j]); // ajoute la grille dans le composant graphique
 
-                // Ajout du filtre au Document de chaque JTextField
-                Document doc = grille[i][j].getDocument();
+                Document doc = grille[i][j].getDocument();// Ajout du filtre au Document de chaque JTextField
                 if (doc instanceof PlainDocument) {
                     ((PlainDocument) doc).setDocumentFilter(new JTextFieldLimit());
                 }
             }
         }
         configurerEcouteurs(); // Appel de la méthode pour configurer les écouteurs d'événements
-
-    
     }
-    //Méthode de dessin vu en TP
+
+    /**
+     * Méthode servant à dessiner.
+     */
     @Override
     protected void paintComponent(Graphics pinceau) {
     Graphics pinceauG = pinceau.create();
@@ -80,7 +85,13 @@ public class GrilleSudoku extends JComponent {
         pinceauG.drawLine(0, i * getHeight() / 9, getWidth(), i * getHeight() / 9);
     }
 }
-    //dessine les cellules
+    /**
+     * sert à dessiner des cellules par la méthode paintComponent.
+     * @param pinceauG
+     * @param ligne
+     * @param colonne
+     * @param text
+     */
     private void dessinCell(Graphics pinceauG, int ligne, int colonne, String text) {
         int x = colonne * getWidth() / 9;
         int y = ligne * getHeight() / 9;
@@ -96,16 +107,18 @@ public class GrilleSudoku extends JComponent {
 
     
 
-     // Définit un DocumentFilter pour limiter la saisie à un seul caractère
+     /**
+      *Classe qui Définit une limite de caractères.
+      */
     class JTextFieldLimit extends DocumentFilter {
-        private int maxLength = 12; // Limite de 12 caractères
+        private int max = 12; // Limite de 12 caractères
 
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
             if (string == null) return;
 
             // Vérifier si la longueur du texte après insertion dépasse la limite
-            if ((fb.getDocument().getLength() + string.length()) <= maxLength) {
+            if ((fb.getDocument().getLength() + string.length()) <= max) {
                 super.insertString(fb, offset, string.replaceAll("[^\\d\\{\\}]", ""), attr); // Permet uniquement les chiffres et les accolades
             }
         }
@@ -116,14 +129,18 @@ public class GrilleSudoku extends JComponent {
 
             // Vérifier si la longueur du texte après remplacement dépasse la limite
             int newLength = fb.getDocument().getLength() + text.length() - length;
-            if (newLength <= maxLength) {
+            if (newLength <= max) {
                 super.replace(fb, offset, length, text.replaceAll("[^\\d\\{\\}]", ""), attrs); // Permet uniquement les chiffres et les accolades
             }
         }
     }
    
-    //Pour vérifier les cases,colonnes et blocs 3x3.
-    public boolean isValidInput(int ligne, int colonne, int valeur) {
+    /**
+     * Méthode qui vérifie les cases,colonnes et blocs 3x3.
+     * 
+     * @return true si une valeur peut être rentrée sans problème.
+     */
+    public boolean entreeValide(int ligne, int colonne, int valeur) {
         for (int j = 0; j < 9; j++) {
             if (j != colonne && grille[ligne][j].getText().equals(String.valueOf(valeur))) {
                 return false;
@@ -145,10 +162,12 @@ public class GrilleSudoku extends JComponent {
                 }
             }
         }
-
         return true;
     }
 
+    /**
+     * Méthode qui gère l'interaction entre la grille et l'utilisateur.
+     */
     public void configurerEcouteurs() {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -176,8 +195,13 @@ public class GrilleSudoku extends JComponent {
                             return ;
                         }
 
+                        if(texte.length() < 1){
+                            JOptionPane.showMessageDialog(null,"Entrez une valeur?!");
+                            return;
+                        }
+
                         int valeur = Integer.parseInt(source.getText());
-                        if (!isValidInput(ligne, colonne, valeur)) {
+                        if (!entreeValide(ligne, colonne, valeur)) {
                             source.setForeground(Color.RED);
                             erreurs++;
                            /*if (erreurs >= 3) {
@@ -189,21 +213,19 @@ public class GrilleSudoku extends JComponent {
                             erreurs = 0;
                         }
                         
-
-                        
-                        if (isGrilleComplete() && isValidInput(ligne, colonne,valeur)) {
+                        if (isGrilleComplete() && entreeValide(ligne, colonne,valeur)) {
                             success++;
-                            // Enregistrer le temps de fin du jeu
-                            finJeu = System.nanoTime();
+                            endGame = System.nanoTime(); // Enregistrer le temps de fin du jeu
                             // Calculer la durée du jeu en secondes
-                            long dureeJeu = (finJeu - debutJeu) / 1_000_000_000;
+                            long dureeJeu = (endGame - start) / 1_000_000_000;
                             // Pour calculer naivement le temps en minutes
                             dureeJeu = dureeJeu - 10 ;
                             if(success == 1){
                             JOptionPane.showMessageDialog(null, "Félicitations! La grille est complète. La durée du jeu est de " +dureeJeu+" minutes.");
+                            //Pas de System.exit pour que le joueur puisse relire le sudoku
                             }
                         }
-                        else if(isGrilleComplete() && !isValidInput(ligne, colonne,valeur)){
+                        else if(isGrilleComplete() && !entreeValide(ligne, colonne,valeur)){
                             JOptionPane.showMessageDialog(null,"La grille est fausse. Veuillez réessayer!");
                         }
                     }
@@ -215,7 +237,10 @@ public class GrilleSudoku extends JComponent {
 
     
 
-    // Méthode pour vérifier si la grille est complète
+    /**
+     * Méthode qui verifie si une grille est complète.
+     * @return l'état de la grille.
+     */
     public boolean isGrilleComplete(){
         for (int i = 0; i < 9; i++){
             for (int j = 0; j < 9; j++) {

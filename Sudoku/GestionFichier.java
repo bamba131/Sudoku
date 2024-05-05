@@ -1,21 +1,30 @@
 
-import javax.swing.JFrame;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.security.auth.login.CredentialException;
-import javax.swing.JFileChooser;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.ByteOrder;
 import java.awt.*;
 
-/*Cette classe nous permet de gérer tout ce qui est la gestion des fichiers cad elle nous permet d'ouvrir les fichiers 
-et y prendre des grilles mais aussi de les sauvegarder */
+
+/**
+ * La classe <code>GestionFichier> est utilisée l'ouverture 
+ * et la sauvegarde des grilles de Sudoku depuis et vers des fichiers.
+ * 
+ * @version 1.1
+ * @author Bamba Top
+ */
 public class GestionFichier {
 
 
-    //Ouvre un fichier par les méthodes des flux d'octets
+    /**
+     * Méthode qui ouvre un fichier et récupère une grille par des flux d'octects.
+     * @param frame
+     * @param grille
+     * @throws IOException
+     */
     public static void ouvrirFichier(JFrame frame, JTextField[][] grille) throws IOException {
         JFileChooser filechooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Fichier GRI", "gri"); //Crée un filtre pour restreindre la sélection de fichiers aux fichiers avec l'extension ".gri"
@@ -33,13 +42,20 @@ public class GestionFichier {
             for (int i = 0; i <= 8; i++) {
                 channel.read(buffer);
                 buffer.flip();
-                int valeur = buffer.getInt();
+                int valeur;
+                try {
+                     valeur = buffer.getInt(); 
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null,"Fichier non valide!");
+                    return;
+                }
+                
                 String nbr = Integer.toString(valeur);
-                // permet d'ajouter des 0 au debut si la ligne contient moin de 9 chiffre
+                // permet d'ajouter des 0 au debut si la ligne contient moins de 9 chiffre
                 while (nbr.length() < 9) {
                     nbr = "0" + nbr;
                 }
-
+            
                 for (int j = 0; j <= 8; j++) {
                     // permet de retirer les 0 de la grille
                     char charAtPosition = nbr.charAt(j);
@@ -60,7 +76,12 @@ public class GestionFichier {
         }
 
     }
-
+    /**
+     * Méthode qui sauvegarde la grille (le contraire de la méthode ouvrirFichier). 
+     * @param fenetre
+     * @param textFields
+     * @throws IOException
+     */
     public static void sauvegarder(JFrame fenetre, JTextField[][] textFields) throws IOException {
         JFileChooser sauvegarder = new JFileChooser();
         FileNameExtensionFilter filtre = new FileNameExtensionFilter("Fichier GRI", "gri");
@@ -88,6 +109,8 @@ public class GestionFichier {
                     String textFieldContent = textFields[i][j].getText();
                     if(textFieldContent.length() > 1){
                         digit = 0;
+                        JOptionPane.showMessageDialog(null,"Veuillez remplir correctement la grille!");
+                        return;
                     }
                     else {
                     digit = textFieldContent.isEmpty() ? 0 : Integer.parseInt(textFieldContent);

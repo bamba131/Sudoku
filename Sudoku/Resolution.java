@@ -1,16 +1,29 @@
 import javax.swing.*;
 
+/**
+ * La classe <code>Resolution</code> est utilisée pour la résolution 
+ * automatique de la grille.
+ * 
+ * @version 1.1
+ * @author Bamba Top
+ */
 public class Resolution {
-    /*La classe resolution nous permet de resoudre la grille automatiquement
-     * en respectant les contraintes du Sudoku.
-     * Une pause est effectué à la résolution automatiquement
-     * pour pouvoir mesurer naîvement le temps nécessaire pour résoudre la grille.
-    */
-
+    /**
+     * Constante qui définit la taille de la grille (c'est à dire le nombre de lignes et de colonnes).
+     */
     private static final int TAILLE_GRILLE = 9;
-    private static final int DELAI_MILLISECONDES = 100; // Délai en millisecondes entre chaque essai
+    /**
+     * Constante qui définit un délai en millisecondes pour le calcul du temps écoulé.
+     */
+    private static final int DELAI_MILLISECONDES = 100; 
 
-    //Parcours la ligne pour detecter le meme chiffre.
+    /**
+     * Méthode qui vérifie qu'un chiffre est deux fois dans la meme ligne.
+     * @param grille 
+     * @param chiffre
+     * @param ligne
+     * @return
+     */
     private static boolean estDansLigne(JTextField[][] grille, String chiffre, int ligne) {
         for (int i = 0; i < TAILLE_GRILLE; i++) {
             if (grille[ligne][i].getText().equals(chiffre)) {
@@ -20,7 +33,13 @@ public class Resolution {
         return false;
     }
 
-    //Parcours la colonne pour detecter le meme chiffre.
+    /**
+     * Méthode qui vérifie qu'un chiffre est dans une colonne.
+     * @param grille
+     * @param chiffre
+     * @param colonne
+     * @return
+     */
     private static boolean estDansColonne(JTextField[][] grille, String chiffre, int colonne) {
         for (int i = 0; i < TAILLE_GRILLE; i++) {
             if (grille[i][colonne].getText().equals(chiffre)) {
@@ -30,7 +49,14 @@ public class Resolution {
         return false;
     }
 
-    //Parcours le bloc 3x3 pour detecter le meme chiffre.
+    /**
+     * Méthode qui vérifie qu'un chiffre est dans une case.
+     * @param grille
+     * @param chiffre
+     * @param ligne
+     * @param colonne
+     * @return
+     */
     private static boolean estDansCase(JTextField[][] grille, String chiffre, int ligne, int colonne) {
         int caseLigne = ligne - ligne % 3;
         int caseColonne = colonne - colonne % 3;
@@ -45,14 +71,25 @@ public class Resolution {
         return false;
     }
 
-    //retourne true si le chiffre n'est pas dans la ligne, colonne et bloc.
+    /**
+     * Méthode qui vérifie si un chiffre peut être intégré dans une cellule.
+     * @param grille
+     * @param chiffre
+     * @param ligne
+     * @param colonne
+     * @return
+     */
     private static boolean isValidPlacement(JTextField[][] grille, String chiffre, int ligne, int colonne) {
         return !estDansLigne(grille, chiffre, ligne) &&
                 !estDansColonne(grille, chiffre, colonne) &&
                 !estDansCase(grille, chiffre, ligne, colonne);
     }
     
-    //résoudre la grille en fesant des essais pour respecter les contraints
+    /**
+     * Méthode qui résoud la grille.
+     * @param grille
+     * @return
+     */
     public static boolean resoudreGrille(JTextField[][] grille) {
         for (int ligne = 0; ligne < TAILLE_GRILLE; ligne++) {
             for (int colonne = 0; colonne < TAILLE_GRILLE; colonne++) {
@@ -79,7 +116,10 @@ public class Resolution {
         return true;
     }
 
-    //une méthode pause qui nous permet d'attendre 100 ms par essai.
+    /**
+     * Méthode définit une pause pour la résolution.
+     * @param milliseconds
+     */
     private static void pause(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
