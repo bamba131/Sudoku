@@ -1,10 +1,5 @@
-package code.DEV.DEVCOPIE.Java.Projet;
-
-
-
 import javax.swing.JTextField;
 import java.util.Random;
-
 
 /**
  * La classe <code>GenerateurFichier</code> est utilisée pour générer un fichier.
