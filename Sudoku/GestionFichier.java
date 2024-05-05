@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.security.auth.login.CredentialException;
@@ -17,8 +16,7 @@ import java.awt.*;
  * @author Bamba Top
  */
 public class GestionFichier {
-
-
+    
     /**
      * Méthode qui ouvre un fichier et récupère une grille par des flux d'octects.
      * @param frame
