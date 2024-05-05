@@ -11,7 +11,7 @@ JVMFLAGS =
 elaborationGrille.class : elaborationGrille.java GrilleSudoku.class GenerateurGrille.class GestionFichier.class
 	${JC} ${JCFLAGS} elaborationGrille.java
 
-Resoudre.class : Resoudre.java GrilleSudoku.class Resolution.class GestionFichier.class 
+Resoudre.class : Resoudre.java GrilleSudoku.class GestionFichier.class Resolution.class
 	${JC} ${JCFLAGS} Resoudre.java
 
 GrilleSudoku.class : GrilleSudoku.java 
@@ -30,8 +30,8 @@ GenerateurGrille.class : GenerateurGrille.java
 run1 : elaborationGrille.class
 	${JVM} ${JVMFLAGS} elaborationGrille
 
-run2 : Resolution.class
-	${JVM} ${JVMFLAGS} Resolution
+run2 : Resoudre.class
+	${JVM} ${JVMFLAGS} Resoudre
 clean :
 	-rm -f *.class
 
