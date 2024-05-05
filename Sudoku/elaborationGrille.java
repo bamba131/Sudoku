@@ -1,3 +1,4 @@
+import Projet1.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -58,7 +59,7 @@ public class elaborationGrille {
             JButton gButton = new JButton("Generer une grille");
             gButton.addActionListener(new ActionListener() { //Evenement qui déclenche le processus par la classe GenerateurGrille.
                 public void actionPerformed(ActionEvent e) {
-                    GenerateurGrille.generateGrid(sudoku.grille);
+                    GenerateurGrille.GenererGrille(sudoku.grille);
                 }
             });
             buttonPanel.add(gButton);
