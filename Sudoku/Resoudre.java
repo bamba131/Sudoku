@@ -5,15 +5,15 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.Random;
 
-/*Le second programme servira à résoudre une grille.
-
-On commencera par charger une grille depuis un fichier.
-Puis on choisira si on souhaite résoudre la grille manuellement ou automatiquement.
-En mode automatique, le programme affichera la grille résolue et
-le temps nécessaire à la résolution (on mesurera naïvement le temps écoulé à l'aide de la méthode nanoTime de la classe System). 
-En mode manuel, le joueur pourra ajouter des chiffres en respectant les contraintes du Sudoku.
-En cas de doute, il pourra ajouter jusqu'à quatre chiffres dans une même case.
-*/
+/**
+ * La classe <code>Resoudre</code> est utilisée pour la résolution 
+ * de la grille de Sudoku.
+ * Elle permet de charger et de résoudre automatiquement ou manuellement
+ * une grille.
+ * 
+ * @version 1.1
+ * @author Bamba Top
+ */
 
 public class Resoudre {
     public static void main(String[] args) {
