@@ -60,7 +60,7 @@ make clean
   
   ## Rapport d'avancement :
   
-  Pour une analyse détaillée du projet, veuillez consulter le rapport d'avancement `rapport.pdf`,disponible dans ce dépôt. Ce document inclut des descriptions de fonctionnalités, des diagrammes de structure, et des réflexions personnelles des auteurs sur le développement du programme.
+  Pour une analyse détaillée du projet, veuillez consulter le rapport d'avancement `rapportSudoku.pdf`,disponible dans ce dépôt. Ce document inclut des descriptions de fonctionnalités, des diagrammes de structure, et des réflexions personnelles des auteurs sur le développement du programme.
 
 ## API officielle de Java :
 
