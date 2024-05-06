@@ -1,6 +1,6 @@
 # Jeu du Sudoku
 
-Ce Sudoku a été développé par Amir Kabbouri et Athiran Nagathurai dans le cadre de la SAE lors de notre première année (2023) de BUT Informatique à l'IUT de Fontainebleau.
+Ce Sudoku a été développé par Bamba Top dans le cadre de la SAE lors de notre première année (2023) de BUT Informatique à l'IUT de Fontainebleau.
 
 ## Principes généraux :
 
@@ -71,6 +71,5 @@ make clean
 
 - Code :
   
-  - Amir Kabbouri  (@kabbouri)
+  - Bamba Top (@topb)
   
-  - Athiran Nagathurai (@nagathur)
