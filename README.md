@@ -72,4 +72,9 @@ make clean
 - Code :
   
   - Bamba Top (@topb)
+
+### Message : 
+Bonjour, Monsieur je vous avais dit qu'il me manquait une ligne de code pour démontrer la manière de placer 4 chiffres temporairement : 
+En effet, le nombre de caractere est limité à 12 c'est à dire qu'il faudra mettre des acolades,et le chiffre choisi et celui ci n'est pas prise en compte dans le respect des règles du sudoku. 
+
   
