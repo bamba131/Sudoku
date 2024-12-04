@@ -57,10 +57,6 @@ make clean
   directement aux contraintes d'unicité) et enlever des chiffres (mais pas s'ils
   apparaissent dans la grille de départ). En cas de doute, il pourra aussi faire
   temporairement cohabiter jusqu'à quatre chiffres dans une même case (dans ce cas, leschiffres qui cohabitent sont limités par les autres cases, mais ne les contraignent pas en retour). Le joueur sera félicité par le programme lorsque toutes les cases contiendront un chiffre (et un seul).
-  
-  ## Rapport d'avancement :
-  
-  Pour une analyse détaillée du projet, veuillez consulter le rapport d'avancement `rapportSudoku.pdf`,disponible dans ce dépôt. Ce document inclut des descriptions de fonctionnalités, des diagrammes de structure, et des réflexions personnelles des auteurs sur le développement du programme.
 
 ## API officielle de Java :
 
@@ -73,8 +69,5 @@ make clean
   
   - Bamba Top (@topb)
 
-### Message : 
-Bonjour, Monsieur je vous avais dit qu'il me manquait une ligne de code pour démontrer la manière de placer 4 chiffres temporairement : 
-En effet, le nombre de caractere est limité à 12 c'est à dire qu'il faudra mettre des acolades,et le chiffre choisi et celui ci n'est pas prise en compte dans le respect des règles du sudoku. 
 
   
